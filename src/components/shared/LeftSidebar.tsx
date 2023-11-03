@@ -1,8 +1,16 @@
+import { sidebarLinks } from "@/constants";
 import { useUserContext } from "@/context/AuthContext"
-import { Link } from "react-router-dom"
+import { INavLink } from "@/types";
+import { Link, NavLink, useLocation } from "react-router-dom"
+import { Button } from "../ui/button";
 
 const LeftSidebar = () => {
+    const {pathname} = useLocation();
     const {user} = useUserContext();
+
+    function signOut(): void {
+        throw new Error("Function not implemented.");
+    }
 
   return (
     <nav className="leftsidebar">
@@ -17,7 +25,18 @@ const LeftSidebar = () => {
                     <p className="small-regular text-light-3">@{user.username}</p>
                 </div>
             </Link>
+            <ul className="flex flex-col gap-6">
+                {sidebarLinks.map((link: INavLink, index)=>{
+                    const isActive = pathname===link.route;
+                    return <li key={index} className={`group leftsidebar-link group-hover:invert-white ${isActive ? "bg-primary-500":null}`}><NavLink to={link.route} className={`flex gap-4 items-center p-4`}><img src={link.imgURL} alt={link.label} className={`group-hover:invert-white ${isActive ? "invert-white":null}`}/>{link.label}</NavLink></li>
+                })}
+            </ul>
         </div>
+
+        <Button variant={"ghost"} className="shad-button_ghost" onClick={()=>signOut()}>
+            <img src="/assets/icons/logout.svg" alt="logout"/>
+            <p className="small-medium lg:base-medium">Logout</p>
+        </Button>
     </nav>
   )
 }
